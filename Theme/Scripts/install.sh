@@ -70,6 +70,32 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Function to configure authentication agent for GUI apps
+configure_authentication_agent() {
+    local distro=$(get_distro)
+    local conf_file="$HOME/.config/hypr/hyprland.conf"
+    local auth_exec_line=""
+
+    if [ "$distro" == "debian" ]; then
+        auth_exec_line="exec-once = /usr/lib/x86_64-linux-gnu/libexec/polkit-kde-authentication-agent-1 # authentication dialogue for GUI apps"
+    elif [ "$distro" == "fedora" ]; then
+        auth_exec_line="exec-once = /usr/libexec/kf5/polkit-kde-authentication-agent-1 # authentication dialogue for GUI apps"
+    else
+        echo "Unsupported distribution: $distro"
+        return 1
+    fi
+
+    # Check if the line already exists in the file
+    if grep -q "$auth_exec_line" "$conf_file"; then
+        echo "Authentication agent configuration already exists in $conf_file"
+    else
+        # Insert the line at line 42 in the file
+        sed -i "43i$auth_exec_line" "$conf_file"
+        echo "Authentication agent configuration added to line 43 in $conf_file"
+    fi
+}
+
+
 # Evaluate options
 flg_Restore=0
 flg_Service=0
@@ -100,6 +126,9 @@ fi
 if [ $flg_Install -eq 1 ] && [ $flg_Restore -eq 1 ]; then
     update_system
 fi
+
+# Configure authentication agent for GUI apps
+configure_authentication_agent
 
 if [ $flg_Service -eq 1 ]; then
     enable_services
