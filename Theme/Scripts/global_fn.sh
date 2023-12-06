@@ -19,14 +19,35 @@ service_ctl()
     fi
 }
 
+get_distro()
+{
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        echo $ID
+    else
+        echo "Unknown"
+    fi
+}
+
 pkg_installed()
 {
     local PkgIn=$1
+    local distro=$(get_distro)
 
-    if rpm -q "$PkgIn" &>/dev/null
-    then
-        return 0
+    if [ "$distro" == "debian" ]; then
+        if dpkg -s "$PkgIn" &>/dev/null; then
+            return 0
+        else
+            return 1
+        fi
+    elif [ "$distro" == "fedora" ]; then
+        if rpm -q "$PkgIn" &>/dev/null; then
+            return 0
+        else
+            return 1
+        fi
     else
+        echo "Unsupported distribution: $distro"
         return 1
     fi
 }
@@ -34,11 +55,22 @@ pkg_installed()
 pkg_available()
 {
     local PkgIn=$1
+    local distro=$(get_distro)
 
-    if dnf info "$PkgIn" &> /dev/null
-    then
-        return 0
+    if [ "$distro" == "debian" ]; then
+        if apt show "$PkgIn" &>/dev/null; then
+            return 0
+        else
+            return 1
+        fi
+    elif [ "$distro" == "fedora" ]; then
+        if dnf info "$PkgIn" &>/dev/null; then
+            return 0
+        else
+            return 1
+        fi
     else
+        echo "Unsupported distribution: $distro"
         return 1
     fi
 }
