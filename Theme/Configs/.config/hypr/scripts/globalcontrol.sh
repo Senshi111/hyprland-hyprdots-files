@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # wallpaper var
-EnableWallDcol=0
+EnableWallDcol=1
 ConfDir="${XDG_CONFIG_HOME:-$HOME/.config}"
 CloneDir="$HOME/Hyprdots"
 ThemeCtl="$ConfDir/hypr/theme.ctl"
@@ -22,39 +22,69 @@ hypr_width=`hyprctl -j getoption general:border_size | jq '.int'`
 #    ncolor="-h string:bgcolor:#f4ede8 -h string:fgcolor:#9893a5 -h string:frcolor:#908caa"
 #fi
 
-# pacman fns
-pkg_installed()
-{
+# Function to check if a package is installed
+pkg_installed() {
     local PkgIn=$1
 
-    if pacman -Qi $PkgIn &> /dev/null
-    then
-        #echo "${PkgIn} is already installed..."
-        return 0
+    if command -v dpkg &> /dev/null; then
+        dpkg -l $PkgIn &> /dev/null
+    elif command -v rpm &> /dev/null; then
+        rpm -q $PkgIn &> /dev/null
     else
-        #echo "${PkgIn} is not installed..."
-        return 1
+        echo "Unsupported package manager. Exiting..."
+        exit 1
     fi
 }
 
-get_aurhlpr()
-{
-    if pkg_installed yay
-    then
-        aurhlpr="yay"
-    elif pkg_installed paru
-    then
-        aurhlpr="paru"
-    fi
-}
-
-check(){
+# Function to check dependencies
+# Function to check dependencies
+check() {
     local Pkg_Dep=$(for PkgIn in "$@"; do ! pkg_installed $PkgIn && echo "$PkgIn"; done)
 
-if [ -n "$Pkg_Dep" ]; then echo -e "$0 Dependencies:\n$Pkg_Dep"
-    read -p "ENTER to install  (Other key: Cancel): " ans
-    if [ -z "$ans" ]; then get_aurhlpr ; $aurhlpr -S $Pkg_Dep
-    else echo "Skipping installation of packages" ;exit 1
+    if [ -n "$Pkg_Dep" ]; then
+        echo -e "$0 Dependencies:\n$Pkg_Dep"
+        read -p "ENTER to install (Other key: Cancel): " ans
+        if [ -z "$ans" ]; then
+            case $DISTRO in
+                "Fedora")
+                    sudo dnf install $Pkg_Dep
+                    ;;
+                "Debian")
+                    sudo apt-get install $Pkg_Dep
+                    ;;
+                *)
+                    echo "Unsupported distribution: $DISTRO. Exiting..."
+                    exit 1
+                    ;;
+            esac
+        else
+            echo "Skipping installation of packages"
+            exit 1
+        fi
     fi
-fi
 }
+
+# Check distribution type
+if command -v lsb_release &> /dev/null; then
+    DISTRO=$(lsb_release -si)
+elif [ -e "/etc/os-release" ]; then
+    DISTRO=$(awk -F= '/^ID=/{print $2}' /etc/os-release | tr -d '"')
+else
+    echo "Unable to determine the distribution. Exiting..."
+    exit 1
+fi
+
+case $DISTRO in
+    "Fedora")
+        # Fedora-specific code can be added here if needed
+        echo "Fedora detected"
+        ;;
+    "Debian")
+        # Debian-specific code can be added here if needed
+        echo "Debian detected"
+        ;;
+    *)
+        echo "Unsupported distribution: $DISTRO. Exiting..."
+        exit 1
+        ;;
+esac

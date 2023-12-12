@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ScrDir=`dirname $(realpath $0)`
+ScrDir=`dirname "$(realpath "$0")"`
 source $ScrDir/globalcontrol.sh
 roconf="~/.config/rofi/config.rasi"
 

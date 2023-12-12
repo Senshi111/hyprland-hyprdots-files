@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # set variables
-ScrDir=`dirname $(realpath $0)`
+ScrDir=`dirname "$(realpath "$0")"`
 DcoDir="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/wallbash"
 TgtScr=$ScrDir/globalcontrol.sh
 source $ScrDir/globalcontrol.sh
