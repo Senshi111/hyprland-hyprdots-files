@@ -75,11 +75,11 @@ else
 fi
 
 case $DISTRO in
-    "Fedora")
+    "fedora")
         # Fedora-specific code can be added here if needed
         echo "Fedora detected"
         ;;
-    "Debian")
+    "debian")
         # Debian-specific code can be added here if needed
         echo "Debian detected"
         ;;
