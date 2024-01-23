@@ -10,9 +10,21 @@ if [ $? -ne 0 ] ; then
     exit 1
 fi
 
-if ! pkg_installed ImageMagick
-then
-    echo "ERROR : imagemagick is not installed..."
+# Check if the distribution is Debian
+if [ -f /etc/debian_version ]; then
+    # Check if ImageMagick is installed on Debian
+    if ! pkg_installed imagemagick; then
+        echo "ERROR: ImageMagick is not installed on Debian..."
+        exit 0
+    fi
+elif [ -f /etc/fedora-release ]; then
+    # Check if ImageMagick is installed on Fedora
+    if ! pkg_installed ImageMagick; then
+        echo "ERROR: ImageMagick is not installed on Fedora..."
+        exit 0
+    fi
+else
+    echo "ERROR: Unsupported distribution. Please add support for your distribution."
     exit 0
 fi
 
