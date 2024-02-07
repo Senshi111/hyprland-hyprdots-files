@@ -5,20 +5,33 @@
 #|/ /---+------------------------------------+/ /---|#
 
 source global_fn.sh
-local distro=$(get_distro)
-if [ $? -ne 0 ] ; then
+get_distro() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        echo $ID
+    else
+        echo "Unknown"
+    fi
+}
+
+pkg_installed() {
+    dpkg -l $1 &> /dev/null || rpm -q $1 &> /dev/null
+}
+
+if [ $? -ne 0 ]; then
     echo "Error: unable to source global_fn.sh, please execute from "$(dirname "$(realpath "$0")")"..."
     exit 1
 fi
 
 # Check if the distribution is Debian
-if [ "$distro" == "debian" ]; then
+if [ "$(get_distro)" == "debian" ]; then
     # Check if ImageMagick is installed on Debian
     if ! pkg_installed imagemagick; then
         echo "ERROR: ImageMagick is not installed on Debian..."
         exit 0
     fi
-elif [ "$distro" == "fedora" ]; then
+# Check if the distribution is Fedora
+elif [ "$(get_distro)" == "fedora" ]; then
     # Check if ImageMagick is installed on Fedora
     if ! pkg_installed ImageMagick; then
         echo "ERROR: ImageMagick is not installed on Fedora..."

@@ -97,7 +97,7 @@ configure_authentication_agent() {
 
 
 # Evaluate options
-flg_Restore=0
+flg_Restore=1
 flg_Service=0
 
 while getopts "idrs" RunStep; do
