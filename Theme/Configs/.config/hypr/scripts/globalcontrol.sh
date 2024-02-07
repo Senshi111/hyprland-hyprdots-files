@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # wallpaper var
-EnableWallDcol=1
+EnableWallDcol=0
 ConfDir="${XDG_CONFIG_HOME:-$HOME/.config}"
 CloneDir="$HOME/Hyprdots"
 ThemeCtl="$ConfDir/hypr/theme.ctl"
@@ -41,10 +41,10 @@ pkg_installed() {
 check() {
     local Pkg_Dep=$(for PkgIn in "$@"; do ! pkg_installed $PkgIn && echo "$PkgIn"; done)
 
-    if [ -n "$Pkg_Dep" ]; then
+if [ -n "$Pkg_Dep" ]; then
         echo -e "$0 Dependencies:\n$Pkg_Dep"
-        read -p "ENTER to install (Other key: Cancel): " ans
-        if [ -z "$ans" ]; then
+    read -p "ENTER to install (Other key: Cancel): " ans
+    if [ -z "$ans" ]; then
             case $DISTRO in
                 "Fedora")
                     sudo dnf install $Pkg_Dep
@@ -60,8 +60,8 @@ check() {
         else
             echo "Skipping installation of packages"
             exit 1
-        fi
     fi
+fi
 }
 
 # Check distribution type

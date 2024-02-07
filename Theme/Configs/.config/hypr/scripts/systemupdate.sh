@@ -1,8 +1,8 @@
 #!/bin/bash
 
- # Check release
+# Check release
 # if [ ! -f /etc/arch-release ] ; then
-#     exit 0
+    #     exit 0
 # fi
 
 # # source variables
@@ -29,13 +29,13 @@ fi
 
 # # Show tooltip
 # if [ $upd -eq 0 ] ; then
-#     echo "{\"text\":\"$upd\", \"tooltip\":\" Packages are up to date\"}"
+    #     echo "{\"text\":\"$upd\", \"tooltip\":\" Packages are up to date\"}"
 # else
-#     echo "{\"text\":\"$upd\", \"tooltip\":\"󱓽 Official $ofc\n󱓾 AUR $aur$fpk_disp\"}"
+    #     echo "{\"text\":\"$upd\", \"tooltip\":\"󱓽 Official $ofc\n󱓾 AUR $aur$fpk_disp\"}"
 # fi
 
 # # Trigger upgrade
 # if [ "$1" == "up" ] ; then
-#     kitty --title systemupdate sh -c "${aurhlpr} -Syu $fpk_exup"
+    #     kitty --title systemupdate sh -c "${aurhlpr} -Syu $fpk_exup"
 # fi
 
