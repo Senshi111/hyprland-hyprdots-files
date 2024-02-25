@@ -7,7 +7,7 @@
 
 # # source variables
 # ScrDir=`dirname $(realpath $0)`
-# source $ScrDir/globalcontrol.sh
+source $ScrDir/globalcontrol.sh
 
 # # Check for updates
 # get_aurhlpr

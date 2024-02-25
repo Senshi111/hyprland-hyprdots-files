@@ -6,7 +6,7 @@
 
 source global_fn.sh
 if [ $? -ne 0 ] ; then
-    echo "Error: unable to source global_fn.sh, please execute from "$(dirname "$(realpath "$0")")"..."
+    echo "Error: unable to source global_fn.sh, please execute from $(dirname "$(realpath "$0")")..."
     exit 1
 fi
 
@@ -19,7 +19,7 @@ do
 
     if [ ! -d "${tgt}" ]
     then
-        mkdir -p ${tgt}
+        mkdir -p ${tgt} || echo "creating the directory as root instead..." && sudo mkdir -p ${tgt}
         echo "${tgt} directory created..."
     fi
 
@@ -30,5 +30,4 @@ done
 
 echo "rebuilding font cache..."
 fc-cache -f
-
 
