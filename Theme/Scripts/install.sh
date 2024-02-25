@@ -137,7 +137,7 @@ if [ $flg_Install -eq 1 ] && [ $flg_Restore -eq 1 ]; then
 
 EOF
 
-    ./install_pre.sh
+   # ./install_pre.sh
 fi
 
 
@@ -219,7 +219,7 @@ if [ $flg_Install -eq 1 ] && [ $flg_Restore -eq 1 ]; then
 
 EOF
 
-    ./install_pst.sh
+  #  ./install_pst.sh
 fi
 
 
