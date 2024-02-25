@@ -110,6 +110,7 @@ while getopts idrs RunStep; do
     s)  flg_Service=1 ;;
     *)  echo "...valid options are..."
         echo "i : [i]nstall hyprland without configs"
+        echo "d : install hyprland [d]efaults without configs --noconfirm"
         echo "r : [r]estore config files"
         echo "s : enable system [s]ervices"
         exit 1 ;;
@@ -143,67 +144,45 @@ fi
 #------------#
 # installing #
 #------------#
-if [ $flg_Install -eq 1 ]; then
-    cat <<"EOF"
-
- _         _       _ _ _         
-|_|___ ___| |_ ___| | |_|___ ___ 
-| |   |_ -|  _| .'| | | |   | . |
-|_|_|_|___|_| |__,|_|_|_|_|_|_  |
-                            |___|
-
-EOF
-
-    #----------------------#
-    # prepare package list #
-    #----------------------#
-    # shift $((OPTIND - 1))
-    # cust_pkg=$1
-    # cp custom_hypr.lst install_pkg.lst
-
-    # if [ -f "$cust_pkg" ] && [ ! -z "$cust_pkg" ]; then
-    #     cat $cust_pkg >>install_pkg.lst
-    # fi
-
-    #-----------------------#
-    # add shell to the list #
-    #-----------------------#
-    if ! pkg_installed zsh && ! pkg_installed fish ; then
-        echo -e "Select shell:\n1) zsh\n2) fish"
-        read -p "Enter option number : " gsh
-
-        case $gsh in
-        1) export getShell="zsh" ;;
-        2) export getShell="fish" ;;
-        *) echo -e "...Invalid option selected..."
-            exit 1 ;;
-        esac
-        echo "${getShell}" >>install_pkg.lst
-    fi
-
-    #--------------------------------#
-    # add nvidia drivers to the list #
-    #--------------------------------#
-    if nvidia_detect; then
-        cat /usr/lib/modules/*/pkgbase | while read krnl; do
-            echo "${krnl}-headers" >>install_pkg.lst
-        done
-        IFS=$' ' read -r -d '' -a nvga < <(lspci -k | grep -E "(VGA|3D)" | grep -i nvidia | awk -F ':' '{print $NF}' | tr -d '[]()' && printf '\0')
-        for nvcode in "${nvga[@]}"; do
-            awk -F '|' -v nvc="${nvcode}" '{if ($3 == nvc) {split(FILENAME,driver,"/"); print driver[length(driver)],"\nnvidia-utils"}}' .nvidia/nvidia*dkms >>install_pkg.lst
-        done
-        echo -e "\033[0;32m[GPU]\033[0m detected // ${nvga[@]}"
-    else
-        echo "nvidia card not detected, skipping nvidia drivers..."
-    fi
-
-    #--------------------------------#
-    # install packages from the list #
-    #--------------------------------#
-    # ./install_pkg.sh install_pkg.lst
-    # rm install_pkg.lst
-
-fi
+# if [ $flg_Install -eq 1 ]; then
+#     cat <<"EOF"
+#
+#  _         _       _ _ _
+# |_|___ ___| |_ ___| | |_|___ ___
+# | |   |_ -|  _| .'| | | |   | . |
+# |_|_|_|___|_| |__,|_|_|_|_|_|_  |
+#                             |___|
+#
+# EOF
+#
+#     #----------------------#
+#     # prepare package list #
+#     #----------------------#
+#     # shift $((OPTIND - 1))
+#     # cust_pkg=$1
+#     # cp custom_hypr.lst install_pkg.lst
+#
+#     # if [ -f "$cust_pkg" ] && [ ! -z "$cust_pkg" ]; then
+#     #     cat $cust_pkg >>install_pkg.lst
+#     # fi
+#
+#     #-----------------------#
+#     # add shell to the list #
+#     #-----------------------#
+#
+#
+#     #--------------------------------#
+#     # add nvidia drivers to the list #
+#     #--------------------------------#
+#
+#
+#     #--------------------------------#
+#     # install packages from the list #
+#     #--------------------------------#
+#     # ./install_pkg.sh install_pkg.lst
+#     # rm install_pkg.lst
+#
+# fi
 
 
 #---------------------------#
@@ -220,8 +199,9 @@ if [ $flg_Restore -eq 1 ]; then
 
 EOF
 
-    ./restore_fnt.sh
-    ./restore_cfg.sh
+ 
+  ./restore_fnt.sh
+ ./restore_cfg.sh
 fi
 
 
