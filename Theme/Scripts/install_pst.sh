@@ -62,7 +62,7 @@ fi
 
 
 # shell
-./restore_shl.sh ${getShell}
+#./restore_shl.sh ${getShell}
 
 
 # themepatcher
