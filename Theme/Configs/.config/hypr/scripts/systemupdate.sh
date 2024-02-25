@@ -5,9 +5,16 @@
     #     exit 0
 # fi
 
-# # source variables
-# ScrDir=`dirname $(realpath $0)`
-source $ScrDir/globalcontrol.sh
+# source variables
+ScrDir=`dirname $(realpath $0)`
+# Check if globalcontrol.sh exists before sourcing
+if [ -f "$ScrDir/globalcontrol.sh" ]; then
+    # Source globalcontrol.sh
+    source "$ScrDir/globalcontrol.sh"
+else
+    echo "Error: globalcontrol.sh not found in $ScrDir" >&2
+    exit 1
+fi
 
 # # Check for updates
 # get_aurhlpr
