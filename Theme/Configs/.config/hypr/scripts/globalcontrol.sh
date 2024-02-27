@@ -46,10 +46,10 @@ if [ -n "$Pkg_Dep" ]; then
     read -p "ENTER to install (Other key: Cancel): " ans
     if [ -z "$ans" ]; then
             case $DISTRO in
-                "Fedora")
+                "fedora")
                     sudo dnf install $Pkg_Dep
                     ;;
-                "Debian")
+                "debian")
                     sudo apt-get install $Pkg_Dep
                     ;;
                 *)
