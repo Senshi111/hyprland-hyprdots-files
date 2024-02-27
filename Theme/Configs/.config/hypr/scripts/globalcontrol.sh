@@ -65,9 +65,7 @@ fi
 }
 
 # Check distribution type
-if command -v lsb_release &> /dev/null; then
-    DISTRO=$(lsb_release -si)
-elif [ -e "/etc/os-release" ]; then
+if [ -e "/etc/os-release" ]; then
     DISTRO=$(awk -F= '/^ID=/{print $2}' /etc/os-release | tr -d '"')
 else
     echo "Unable to determine the distribution. Exiting..."
