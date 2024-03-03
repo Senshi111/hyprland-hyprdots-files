@@ -20,6 +20,39 @@ show_banner() {
 EOF
 }
 
+
+# Source directory
+SOURCE_DIR="../Configs"
+
+# Destination directory
+DEST_DIR="$HOME"
+
+# Check if source directory exists
+if [ ! -d "$SOURCE_DIR" ]; then
+    echo "Source directory $SOURCE_DIR not found."
+    exit 1
+fi
+
+# Enable dotglob to include hidden files in the globbing pattern
+shopt -s dotglob
+
+# Copy files and directories to the home directory, including hidden files
+cp -r "$SOURCE_DIR"/* "$DEST_DIR"/
+
+# Check if the copy operation was successful
+if [ $? -eq 0 ]; then
+    echo "Files copied successfully to $DEST_DIR"
+else
+    echo "Error: Failed to copy files to $DEST_DIR"
+    exit 1
+fi
+
+# Disable dotglob
+shopt -u dotglob
+
+
+
+
 # Function to restore custom configurations
 restore_configs() {
     cat << "EOF"
