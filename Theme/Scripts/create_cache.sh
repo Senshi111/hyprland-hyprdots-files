@@ -18,25 +18,34 @@ pkg_installed() {
     dpkg -l $1 &> /dev/null || rpm -q $1 &> /dev/null
 }
 
-
 if [ $? -ne 0 ] ; then
     echo "Error: unable to source global_fn.sh, please execute from $(dirname "$(realpath "$0")")..."
     exit 1
 fi
 
+# Get the distribution
+distro=$(get_distro)
+
 # Check if the distribution is Debian
-if [ "$(get_distro)" == "debian" ]; then
+if [ "$distro" == "debian" ]; then
     # Check if ImageMagick is installed on Debian
     if ! pkg_installed imagemagick; then
-    echo "ERROR: ImageMagick is not installed on Debian..."
+        echo "ERROR: ImageMagick is not installed on Debian..."
         exit 0
     fi
 # Check if the distribution is Fedora
-elif [ "$(get_distro)" == "fedora" ]; then
+elif [ "$distro" == "fedora" ]; then
     # Check if ImageMagick is installed on Fedora
     if ! pkg_installed ImageMagick; then
         echo "ERROR: ImageMagick is not installed on Fedora..."
-exit 0
+        exit 0
+    fi
+# Check if the distribution is Ubuntu
+elif [ "$distro" == "ubuntu" ]; then
+    # Check if ImageMagick is installed on Ubuntu
+    if ! pkg_installed imagemagick; then
+        echo "ERROR: ImageMagick is not installed on Ubuntu..."
+        exit 0
     fi
 else
     echo "ERROR: Unsupported distribution. Please add support for your distribution."
