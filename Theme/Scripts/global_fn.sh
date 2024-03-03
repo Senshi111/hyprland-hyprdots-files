@@ -23,8 +23,7 @@ service_ctl()
     fi
 }
 
-get_distro()
-{
+get_distro() {
     if [ -f /etc/os-release ]; then
         . /etc/os-release
         echo $ID
@@ -33,22 +32,21 @@ get_distro()
     fi
 }
 
-pkg_installed()
-{
+pkg_installed() {
     local PkgIn=$1
-local distro=$(get_distro)
+    local distro=$(get_distro)
 
-    if [ "$distro" == "debian" ]; then
+    if [ "$distro" == "debian" ] || [ "$distro" == "ubuntu" ]; then
         if dpkg -s "$PkgIn" &>/dev/null; then
-        return 0
+            return 0
         else
             return 1
         fi
     elif [ "$distro" == "fedora" ]; then
         if rpm -q "$PkgIn" &>/dev/null; then
-        return 0
-    else
-        return 1
+            return 0
+        else
+            return 1
         fi
     else
         echo "Unsupported distribution: $distro"
@@ -56,28 +54,28 @@ local distro=$(get_distro)
     fi
 }
 
-pkg_available()
-{
+pkg_available() {
     local PkgIn=$1
-local distro=$(get_distro)
+    local distro=$(get_distro)
 
-    if [ "$distro" == "debian" ]; then
+    if [ "$distro" == "debian" ] || [ "$distro" == "ubuntu" ]; then
         if apt show "$PkgIn" &>/dev/null; then
-                return 0
-    else
-                return 1
-    fi
-elif [ "$distro" == "fedora" ]; then
+            return 0
+        else
+            return 1
+        fi
+    elif [ "$distro" == "fedora" ]; then
         if dnf info "$PkgIn" &>/dev/null; then
-                return 0
-    else
-        return 1
+            return 0
+        else
+            return 1
         fi
     else
         echo "Unsupported distribution: $distro"
         return 1
     fi
 }
+
 
 nvidia_detect()
 {
