@@ -37,19 +37,18 @@ pkg_installed() {
 }
 
 # Function to check dependencies
-# Function to check dependencies
 check() {
     local Pkg_Dep=$(for PkgIn in "$@"; do ! pkg_installed $PkgIn && echo "$PkgIn"; done)
 
-if [ -n "$Pkg_Dep" ]; then
+    if [ -n "$Pkg_Dep" ]; then
         echo -e "$0 Dependencies:\n$Pkg_Dep"
-    read -p "ENTER to install (Other key: Cancel): " ans
-    if [ -z "$ans" ]; then
+        read -p "ENTER to install (Other key: Cancel): " ans
+        if [ -z "$ans" ]; then
             case $DISTRO in
                 "fedora")
                     sudo dnf install $Pkg_Dep
                     ;;
-                "debian")
+                "debian" | "ubuntu") # Adding support for Ubuntu
                     sudo apt-get install $Pkg_Dep
                     ;;
                 *)
@@ -60,8 +59,8 @@ if [ -n "$Pkg_Dep" ]; then
         else
             echo "Skipping installation of packages"
             exit 1
+        fi
     fi
-fi
 }
 
 # Check distribution type
@@ -77,9 +76,9 @@ case $DISTRO in
         # Fedora-specific code can be added here if needed
         echo "Fedora detected"
         ;;
-    "debian")
-        # Debian-specific code can be added here if needed
-        echo "Debian detected"
+    "debian" | "ubuntu") # Adding support for Ubuntu
+        # Debian/Ubuntu-specific code can be added here if needed
+        echo "Debian/Ubuntu detected"
         ;;
     *)
         echo "Unsupported distribution: $DISTRO. Exiting..."
