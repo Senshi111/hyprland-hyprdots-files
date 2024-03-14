@@ -3,7 +3,7 @@
 # wallpaper var
 EnableWallDcol=0
 ConfDir="${XDG_CONFIG_HOME:-$HOME/.config}"
-CloneDir="$HOME/Hyprdots"
+CloneDir="/home/tribal/ubuntu-hyprland-hyprdots/build-and-install/hyprland-hyprdots-files/Theme"
 ThemeCtl="$ConfDir/hypr/theme.ctl"
 cacheDir="$HOME/.cache/hyprdots"
 
@@ -46,10 +46,13 @@ check() {
         if [ -z "$ans" ]; then
             case $DISTRO in
                 "fedora")
-                    sudo dnf install $Pkg_Dep
+                    install_fedora_packages "$Pkg_Dep"
                     ;;
-                "debian" | "ubuntu") # Adding support for Ubuntu
-                    sudo apt-get install $Pkg_Dep
+                "debian")
+                    install_debian_packages "$Pkg_Dep"
+                    ;;
+                "ubuntu")
+                    install_ubuntu_packages "$Pkg_Dep"
                     ;;
                 *)
                     echo "Unsupported distribution: $DISTRO. Exiting..."
@@ -63,6 +66,18 @@ check() {
     fi
 }
 
+install_fedora_packages() {
+    sudo dnf install "$@"
+}
+
+install_debian_packages() {
+    sudo apt-get install "$@"
+}
+
+install_ubuntu_packages() {
+    sudo apt-get install "$@"
+}
+
 # Check distribution type
 if [ -e "/etc/os-release" ]; then
     DISTRO=$(awk -F= '/^ID=/{print $2}' /etc/os-release | tr -d '"')
@@ -73,15 +88,34 @@ fi
 
 case $DISTRO in
     "fedora")
-        # Fedora-specific code can be added here if needed
+        # Fedora-specific code
         echo "Fedora detected"
+        # Add Fedora-specific commands here
         ;;
-    "debian" | "ubuntu") # Adding support for Ubuntu
-        # Debian/Ubuntu-specific code can be added here if needed
-        echo "Debian/Ubuntu detected"
+    "debian")
+        # Debian-specific code
+        if [ -e "/etc/debian_version" ]; then
+            echo "Debian detected"
+            # Add Debian-specific commands here
+        else
+            echo "Unsupported distribution: $DISTRO. Exiting..."
+            exit 1
+        fi
+        ;;
+    "ubuntu")
+        # Ubuntu-specific code
+        if [ -e "/etc/lsb-release" ]; then
+            echo "Ubuntu detected"
+            # Add Ubuntu-specific commands here
+        else
+            echo "Unsupported distribution: $DISTRO. Exiting..."
+            exit 1
+        fi
         ;;
     *)
         echo "Unsupported distribution: $DISTRO. Exiting..."
         exit 1
         ;;
 esac
+
+
