@@ -7,6 +7,9 @@
 set -e
 
 CloneDir=`dirname "$(dirname "$(realpath "$0")")"`
+ConfDir="${XDG_CONFIG_HOME:-$HOME/.config}"
+HyprdotsDir="${ConfDir}/hyprdots"
+ThemeCtl="${HyprdotsDir}/theme.ctl"
 
 service_ctl()
 {
@@ -34,19 +37,19 @@ get_distro() {
 
 pkg_installed() {
     local PkgIn=$1
-    local distro=$(get_distro)
+local distro=$(get_distro)
 
     if [ "$distro" == "debian" ] || [ "$distro" == "ubuntu" ]; then
         if dpkg -s "$PkgIn" &>/dev/null; then
-            return 0
+        return 0
         else
             return 1
         fi
     elif [ "$distro" == "fedora" ]; then
         if rpm -q "$PkgIn" &>/dev/null; then
-            return 0
-        else
-            return 1
+        return 0
+    else
+        return 1
         fi
     else
         echo "Unsupported distribution: $distro"
@@ -54,21 +57,22 @@ pkg_installed() {
     fi
 }
 
-pkg_available() {
+aur_available()
+{
     local PkgIn=$1
     local distro=$(get_distro)
 
     if [ "$distro" == "debian" ] || [ "$distro" == "ubuntu" ]; then
         if apt show "$PkgIn" &>/dev/null; then
-            return 0
+        return 0
         else
             return 1
         fi
     elif [ "$distro" == "fedora" ]; then
         if dnf info "$PkgIn" &>/dev/null; then
-            return 0
-        else
-            return 1
+        return 0
+    else
+        return 1
         fi
     else
         echo "Unsupported distribution: $distro"
@@ -87,4 +91,21 @@ nvidia_detect()
         #echo "nvidia card not detected..."
         return 1
     fi
+}
+
+prompt_timer()
+{
+    set +e
+    local timsec=$1
+    local msg=$2
+    local pread=""
+    while [[ $timsec -ge 0 ]] ; do
+        echo -ne "\033[0K\r${msg} (${timsec}s) : "
+        read -t 1 -n 1 -s promptIn
+        [ $? -eq 0 ] && break
+        ((timsec--))
+    done
+    export promptIn
+    echo ${promptIn}
+    set -e
 }
