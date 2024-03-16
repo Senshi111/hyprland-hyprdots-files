@@ -4,7 +4,6 @@
 #|-/ /--| Prasanth Rangan                             |-/ /--|#
 #|/ /---+---------------------------------------------+/ /---|#
 
-
 #// accent color profile
 
 colorProfile="default"
