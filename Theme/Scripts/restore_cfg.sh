@@ -85,4 +85,3 @@ fi
 
 ./create_cache.sh "${ThemeOverride}"
 [ -z "${ThemeOverride}" ] && ./restore_lnk.sh
-
