@@ -57,6 +57,31 @@ local distro=$(get_distro)
     fi
 }
 
+
+pkg_available()
+{
+    local PkgIn=$1
+    local distro=$(get_distro)
+
+    if [ "$distro" == "debian" ] || [ "$distro" == "ubuntu" ]; then
+        if apt show "$PkgIn" &>/dev/null; then
+        return 0
+        else
+            return 1
+        fi
+    elif [ "$distro" == "fedora" ]; then
+        if dnf info "$PkgIn" &>/dev/null; then
+        return 0
+    else
+        return 1
+        fi
+    else
+        echo "Unsupported distribution: $distro"
+        return 1
+    fi
+}
+
+
 aur_available()
 {
     local PkgIn=$1
