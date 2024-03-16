@@ -30,6 +30,7 @@ pkg_installed() {
     fi
 }
 
+
 # Function to check dependencies
 check() {
     local Pkg_Dep=$(for PkgIn in "$@"; do ! pkg_installed $PkgIn && echo "$PkgIn"; done)
