@@ -5,15 +5,22 @@
 #|/ /---+--------------------------+/ /---|#
 
 # Function to display a banner
+scrDir=$(dirname "$(realpath "$0")")
+source "${scrDir}/global_fn.sh"
+if [ $? -ne 0 ] ; then
+    echo "Error: unable to source global_fn.sh..."
+    exit 1
+fi
+
 show_banner() {
     cat << "EOF"
 
 -----------------------------------------------------------------
-        _  _                  _     _      
+        _  _                  _     _
       | || |_  _ _ __ _ _ __| |___| |_ ___
      | __ | || | '_ \ '_/ _` / _ \  _(_-<
     |_||_|\_, | .__/_| \__,_\___/\__/__/
-   |__/|_|                       
+   |__/|_|
 
 -----------------------------------------------------------------
 
@@ -21,111 +28,11 @@ EOF
 }
 
 
-# Source directory
-SOURCE_DIR="../Configs"
-
-# Destination directory
-DEST_DIR="$HOME"
-
-# Check if source directory exists
-if [ ! -d "$SOURCE_DIR" ]; then
-    echo "Source directory $SOURCE_DIR not found."
-    exit 1
-fi
-
-# Enable dotglob to include hidden files in the globbing pattern
-shopt -s dotglob
-
-# Copy files and directories to the home directory, including hidden files
-cp -r "$SOURCE_DIR"/* "$DEST_DIR"/
-
-# Check if the copy operation was successful
-if [ $? -eq 0 ]; then
-    echo "Files copied successfully to $DEST_DIR"
-else
-    echo "Error: Failed to copy files to $DEST_DIR"
-    exit 1
-fi
-
-# Disable dotglob
-shopt -u dotglob
+#--------------------------------#
+# import variables and functions #
+#--------------------------------#
 
 
-
-
-# Function to restore custom configurations
-restore_configs() {
-    cat << "EOF"
-
-             _           _
- ___ ___ ___| |_ ___ ___|_|___ ___
-|  _| -_|_ -|  iclecc.md |  | . |
-|_| |___|___|_| |___|_| |_|_|_|_  |
-                              |___|
-
-EOF
-
-    # You need to provide the appropriate script names for restoring configs.
-     ./restore_fnt.sh
-     ./restore_cfg.sh
-}
-
-# Function to update SDDM, GRUB, and Zsh
-update_system() {
-    # You should adjust this line to fit the Fedora equivalent of restore_sgz.sh.
-     echo "Updating SDDM, GRUB, and Zsh on Fedora..."
-}
-
-# Function to enable system services
-enable_services() {
-    cat << "EOF"
-
-                 _
- ___ ___ ___ _ _|_|___ ___ ___
-|_ -| -_|  _| | | | iclecc.md
-|___|___|_|  \_/|_|___|___|___|
-
-EOF
-
-    # Adjust service names for Fedora.
-    service_ctl NetworkManager
-    service_ctl bluetooth
-    service_ctl sddm
-}
-
-# Display the banner
-show_banner
-
-# Import variables and functions
-source global_fn.sh
-if [ $? -ne 0 ]; then
-    echo "Error: unable to source global_fn.sh, please execute from $(dirname "$(realpath "$0")")..."
-    exit 1
-fi
-# Function to configure authentication agent for GUI apps
-configure_authentication_agent() {
-    local distro=$(get_distro)
-    local conf_file="$HOME/.config/hypr/hyprland.conf"
-    local auth_exec_line=""
-
-    if [ "$distro" == "debian" ]; then
-        auth_exec_line="exec-once = /usr/lib/x86_64-linux-gnu/libexec/polkit-kde-authentication-agent-1 # authentication dialogue for GUI apps"
-    elif [ "$distro" == "fedora" ]; then
-        auth_exec_line="exec-once = /usr/libexec/kf5/polkit-kde-authentication-agent-1 # authentication dialogue for GUI apps"
-    else
-        echo "Unsupported distribution: $distro"
-        return 1
-    fi
-
-    # Check if the line already exists in the file
-    if grep -q "$auth_exec_line" "$conf_file"; then
-        echo "Authentication agent configuration already exists in $conf_file"
-    else
-        # Insert the line at line 42 in the file
-        sed -i "43i$auth_exec_line" "$conf_file"
-        echo "Authentication agent configuration added to line 43 in $conf_file"
-    fi
-}
 
 #------------------#
 # evaluate options #
@@ -134,11 +41,10 @@ flg_Install=0
 flg_Restore=0
 flg_Service=0
 
-while getopts idrs RunStep; do
+while getopts idrs RunStep ; do
     case $RunStep in
     i)  flg_Install=1 ;;
-    d)  flg_Install=1
-        export use_default="--noconfirm" ;;
+    d)  flg_Install=1 ; export use_default="--noconfirm" ;;
     r)  flg_Restore=1 ;;
     s)  flg_Service=1 ;;
     *)  echo "...valid options are..."
@@ -160,17 +66,17 @@ fi
 #--------------------#
 # pre-install script #
 #--------------------#
-if [ $flg_Install -eq 1 ] && [ $flg_Restore -eq 1 ]; then
+if [ ${flg_Install} -eq 1 ] && [ ${flg_Restore} -eq 1 ] ; then
     cat <<"EOF"
-                _         _       _ _ 
+                _         _       _ _
  ___ ___ ___   |_|___ ___| |_ ___| | |
 | . |  _| -_|  | |   |_ -|  _| .'| | |
 |  _|_| |___|  |_|_|_|___|_| |__,|_|_|
-|_|                                   
+|_|
 
 EOF
 
-   # ./install_pre.sh
+    "${scrDir}/install_pre.sh"
 fi
 
 
@@ -178,30 +84,30 @@ fi
 # installing #
 #------------#
 # if [ $flg_Install -eq 1 ]; then
-#     cat <<"EOF"
+    #     cat <<"EOF"
 #
 #  _         _       _ _ _
 # |_|___ ___| |_ ___| | |_|___ ___
 # | |   |_ -|  _| .'| | | |   | . |
 # |_|_|_|___|_| |__,|_|_|_|_|_|_  |
-#                             |___|
+                            #                             |___|
 #
 # EOF
 #
 #     #----------------------#
-#     # prepare package list #
-#     #----------------------#
-#     # shift $((OPTIND - 1))
-#     # cust_pkg=$1
-#     # cp custom_hypr.lst install_pkg.lst
+    #     # prepare package list #
+    #     #----------------------#
+    #     # shift $((OPTIND - 1))
+    #     # cust_pkg=$1
+    #     # cp custom_hypr.lst install_pkg.lst
 #
 #     # if [ -f "$cust_pkg" ] && [ ! -z "$cust_pkg" ]; then
-#     #     cat $cust_pkg >>install_pkg.lst
+        #     #     cat $cust_pkg >>install_pkg.lst
 #     # fi
 #
 #     #-----------------------#
-#     # add shell to the list #
-#     #-----------------------#
+    #     # add shell to the list #
+    #     #-----------------------#
 #
 #
 #     #--------------------------------#
@@ -210,9 +116,9 @@ fi
 #
 #
 #     #--------------------------------#
-#     # install packages from the list #
-#     #--------------------------------#
-#     # ./install_pkg.sh install_pkg.lst
+    #     # install packages from the list #
+    #     #--------------------------------#
+    #     # ./install_pkg.sh install_pkg.lst
 #     # rm install_pkg.lst
 #
 # fi
@@ -221,56 +127,63 @@ fi
 #---------------------------#
 # restore my custom configs #
 #---------------------------#
-if [ $flg_Restore -eq 1 ]; then
+if [ ${flg_Restore} -eq 1 ] ; then
     cat <<"EOF"
 
-             _           _         
- ___ ___ ___| |_ ___ ___|_|___ ___ 
+             _           _
+ ___ ___ ___| |_ ___ ___|_|___ ___
 |  _| -_|_ -|  _| . |  _| |   | . |
 |_| |___|___|_| |___|_| |_|_|_|_  |
                               |___|
 
 EOF
 
- 
-  ./restore_fnt.sh
- ./restore_cfg.sh
+    "${scrDir}/restore_fnt.sh"
+    "${scrDir}/restore_cfg.sh"
 fi
 
 
 #---------------------#
 # post-install script #
 #---------------------#
-if [ $flg_Install -eq 1 ] && [ $flg_Restore -eq 1 ]; then
+if [ ${flg_Install} -eq 1 ] && [ ${flg_Restore} -eq 1 ] ; then
     cat <<"EOF"
 
-             _      _         _       _ _ 
+             _      _         _       _ _
  ___ ___ ___| |_   |_|___ ___| |_ ___| | |
 | . | . |_ -|  _|  | |   |_ -|  _| .'| | |
 |  _|___|___|_|    |_|_|_|___|_| |__,|_|_|
-|_|                                       
+|_|
 
 EOF
 
-  #  ./install_pst.sh
+    "${scrDir}/install_pst.sh"
 fi
 
 
 #------------------------#
 # enable system services #
 #------------------------#
-if [ $flg_Service -eq 1 ]; then
+if [ ${flg_Service} -eq 1 ] ; then
     cat <<"EOF"
 
-                 _             
- ___ ___ ___ _ _|_|___ ___ ___ 
+                 _
+ ___ ___ ___ _ _|_|___ ___ ___
 |_ -| -_|  _| | | |  _| -_|_ -|
 |___|___|_|  \_/|_|___|___|___|
 
 EOF
 
-    while read service ; do
-        service_ctl $service
-    done < system_ctl.lst
+    while read servChk ; do
+
+        if [[ $(systemctl list-units --all -t service --full --no-legend "${servChk}.service" | sed 's/^\s*//g' | cut -f1 -d' ') == "${servChk}.service" ]] ; then
+            echo -e "\033[0;33m[SKIP]\033[0m ${servChk} service is active..."
+        else
+            echo -e "\033[0;32m[systemctl]\033[0m starting ${servChk} system service..."
+            sudo systemctl enable "${servChk}.service"
+            sudo systemctl start "${servChk}.service"
+        fi
+
+    done < "${scrDir}/system_ctl.lst"
 fi
 

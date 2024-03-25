@@ -20,7 +20,7 @@ fi
 # cp custom_hypr.lst install_pkg.lst
 
 # if [ -f "$1" ] && [ ! -z "$1" ] ; then
-#     cat $1 >> install_pkg.lst
+    #     cat $1 >> install_pkg.lst
 # fi
 
 
