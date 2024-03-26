@@ -37,7 +37,7 @@ local distro=$(get_distro)
             return 1
         fi
     elif [ "$distro" == "fedora" ]; then
-        if rpm -q "$PkgIn" &>/dev/null; then
+        if rpm -qa | grep "$PkgIn" &>/dev/null; then
         return 0
     else
         return 1
