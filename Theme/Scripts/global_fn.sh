@@ -6,11 +6,9 @@
 
 set -e
 
-CloneDir=`dirname "$(dirname "$(realpath "$0")")"`
-ConfDir="${XDG_CONFIG_HOME:-$HOME/.config}"
-cacheDir="$HOME/.cache/hyprdots"
-HyprdotsDir="${ConfDir}/hyprdots"
-ThemeCtl="${HyprdotsDir}/theme.ctl"
+CloneDir=$(dirname "$(dirname "$(realpath "$0")")")
+confDir="${XDG_CONFIG_HOME:-$HOME/.config}"
+cacheDir="$HOME/.cache/hyde"
 aurList=(yay paru)
 shlList=(zsh fish)
 
@@ -121,13 +119,12 @@ nvidia_detect()
     fi
 }
 
-prompt_timer()
-{
+prompt_timer() {
     set +e
     unset promptIn
     local timsec=$1
     local msg=$2
-    while [[ ${timsec} -ge 0 ]] ; do
+    while [[ ${timsec} -ge 0 ]]; do
         echo -ne "\r :: ${msg} (${timsec}s) : "
         read -t 1 -n 1 promptIn
         [ $? -eq 0 ] && break
