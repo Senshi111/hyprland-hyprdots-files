@@ -23,6 +23,7 @@ fi
 
 set -a
 source "${wallbashOut}"
+[ "${dcol_mode}" == "dark" ] && dcol_invt="light" || dcol_invt="dark"
 set +a
 
 
@@ -30,14 +31,14 @@ set +a
 
 fn_wallbash () {
     local tplt="${1}"
-    local type="${2}"
-    eval target=$(head -1 "${tplt}" | awk -F '|' '{print $1}')
+    eval target="$(head -1 "${tplt}" | awk -F '|' '{print $1}')"
     [ ! -d "$(dirname "${target}")" ] && echo "[skip] \"${target}\"" && return 0
-    appexe=$(head -1 "${tplt}" | awk -F '|' '{print $2}')
+    appexe="$(head -1 "${tplt}" | awk -F '|' '{print $2}')"
     sed '1d' "${tplt}" > "${target}"
 
     if [[ "${enableWallDcol}" -eq 2 && "${dcol_mode}" == "light" ]] || [[ "${enableWallDcol}" -eq 3 && "${dcol_mode}" == "dark" ]] ; then
-        sed -i 's/<wallbash_pry1>/'"${dcol_pry4}"'/g
+        sed -i 's/<wallbash_mode>/'"${dcol_invt}"'/g
+                s/<wallbash_pry1>/'"${dcol_pry4}"'/g
                 s/<wallbash_txt1>/'"${dcol_txt4}"'/g
                 s/<wallbash_1xa1>/'"${dcol_4xa9}"'/g
                 s/<wallbash_1xa2>/'"${dcol_4xa8}"'/g
@@ -125,8 +126,9 @@ fn_wallbash () {
                 s/<wallbash_4xa7_rgba(\([^)]*\))>/'"${dcol_1xa3_rgba}"'/g
                 s/<wallbash_4xa8_rgba(\([^)]*\))>/'"${dcol_1xa2_rgba}"'/g
                 s/<wallbash_4xa9_rgba(\([^)]*\))>/'"${dcol_1xa1_rgba}"'/g' "${target}"
-    elif [ "${type}" == "dcol" ] ; then
-        sed -i 's/<wallbash_pry1>/'"${dcol_pry1}"'/g
+    else
+        sed -i 's/<wallbash_mode>/'"${dcol_mode}"'/g
+                s/<wallbash_pry1>/'"${dcol_pry1}"'/g
                 s/<wallbash_txt1>/'"${dcol_txt1}"'/g
                 s/<wallbash_1xa1>/'"${dcol_1xa1}"'/g
                 s/<wallbash_1xa2>/'"${dcol_1xa2}"'/g
@@ -216,9 +218,7 @@ fn_wallbash () {
                 s/<wallbash_4xa9_rgba(\([^)]*\))>/'"${dcol_4xa9_rgba}"'/g' "${target}"
     fi
 
-    if [ ! -z "${appexe}" ] ; then
-        eval "${appexe}"
-    fi
+    [ -z "${appexe}" ] || bash -c "${appexe}"
 }
 
 export -f fn_wallbash
@@ -241,9 +241,9 @@ if [ "${enableWallDcol}" -eq 0 ] && [[ "${reload_flag}" -eq 1 ]] ; then
 elif [ "${enableWallDcol}" -gt 0 ] ; then
 
     echo ":: deploying wallbash colors :: ${dcol_mode} wallpaper detected"
-    find "${wallbashDir}/Wall-Dcol" -type f -name "*.dcol" | parallel fn_wallbash {} "dcol"
+    find "${wallbashDir}/Wall-Dcol" -type f -name "*.dcol" | parallel fn_wallbash {}
 
 fi
 
-find "${wallbashDir}/Wall-Ways" -type f -name "*.dcol" | parallel fn_wallbash {} "dcol"
+find "${wallbashDir}/Wall-Ways" -type f -name "*.dcol" | parallel fn_wallbash {}
 

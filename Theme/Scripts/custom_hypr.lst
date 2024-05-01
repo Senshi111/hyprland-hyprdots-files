@@ -14,6 +14,7 @@ bluez                                                  # bluetooth protocol stac
 bluez-utils                                            # bluetooth utility cli
 blueman                                                # bluetooth manager gui
 brightnessctl                                          # screen brightness control
+udiskie                                                # manage removable media
 
 # --------------------------------------------------- // Display Manager
 sddm                                                   # display manager for KDE plasma
@@ -36,7 +37,7 @@ swappy                                                 # screenshot editor
 cliphist                                               # clipboard manager
 
 # --------------------------------------------------- // Dependencies
-polkit-kde-agent                                       # authentication agent
+polkit-gnome                                           # authentication agent
 xdg-desktop-portal-hyprland                            # xdg desktop portal for hyprland
 pacman-contrib                                         # for system update check
 python-pyamdgpuinfo                                    # for amd gpu info
@@ -72,7 +73,7 @@ oh-my-zsh-git|zsh                                      # plugin manager for zsh
 zsh-theme-powerlevel10k|zsh oh-my-zsh-git              # theme for zsh
 lsd|fish                                               # file lister for fish
 starship|fish                                          # customizable shell prompt
-neofetch                                               # fetch tool
+fastfetch                                              # system information fetch tool
 pokemon-colorscripts-git|zsh                           # display pokemon sprites
 
 # --------------------------------------------------- // HyDE

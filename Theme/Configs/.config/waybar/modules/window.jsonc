@@ -1,5 +1,5 @@
     "hyprland/window": {
-        "format": "  {}",
+        "format": " ƒ {}",
         "rotate": ${r_deg},
         "separate-outputs": true,
         "rewrite": {

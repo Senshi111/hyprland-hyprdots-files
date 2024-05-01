@@ -6,7 +6,8 @@
 
 set -e
 
-CloneDir=$(dirname "$(dirname "$(realpath "$0")")")
+scrDir="$(dirname "$(realpath "$0")")"
+cloneDir="$(dirname "${scrDir}")"
 confDir="${XDG_CONFIG_HOME:-$HOME/.config}"
 cacheDir="$HOME/.cache/hyde"
 aurList=(yay paru)
@@ -76,7 +77,7 @@ local distro=$(get_distro)
         return 0
     else
         return 1
-        fi
+    fi
     else
         echo "Unsupported distribution: $distro"
         return 1

@@ -91,7 +91,7 @@ sed -i "/^gtk-icon-theme-name=/c\gtk-icon-theme-name=${gtkIcon}" $confDir/gtk-3.
 if [ -d /run/current-system/sw/share/themes ] ; then
     themeDir=/run/current-system/sw/share/themes
 else
-    themeDir=/usr/share/themes
+    themeDir=~/.themes
 fi
 rm -rf "${confDir}/gtk-4.0"
 ln -s "${themeDir}/${gtkTheme}/gtk-4.0" "${confDir}/gtk-4.0"
@@ -100,10 +100,14 @@ ln -s "${themeDir}/${gtkTheme}/gtk-4.0" "${confDir}/gtk-4.0"
 #// flatpak GTK
 
 if pkg_installed flatpak ; then
-    flatpak --user override --env=GTK_THEME="${gtkTheme}"
-    flatpak --user override --env=ICON_THEME="${gtkIcon}"
+    if [ "${enableWallDcol}" -eq 0 ] ; then
+        flatpak --user override --env=GTK_THEME="${gtkTheme}"
+        flatpak --user override --env=ICON_THEME="${gtkIcon}"
+    else
+        flatpak --user override --env=GTK_THEME="Wallbash-Gtk"
+        flatpak --user override --env=ICON_THEME="${gtkIcon}"
+    fi
 fi
-
 
 #// wallpaper
 
