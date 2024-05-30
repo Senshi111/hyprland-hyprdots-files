@@ -176,7 +176,7 @@ local distro=$(get_distro)
         return 0
     else
         return 1
-        fi
+    fi
     else
         echo "Unsupported distribution: $distro"
         return 1
